@@ -7,7 +7,14 @@ export async function middleware(request: NextRequest) {
   const session = await verifySession(token);
   const { pathname } = request.nextUrl;
 
-  if (pathname.startsWith('/dashboard') && !session) {
+  const isProtected =
+    pathname.startsWith('/dashboard') ||
+    pathname.startsWith('/leads') ||
+    pathname.startsWith('/pipeline') ||
+    pathname.startsWith('/reminders') ||
+    pathname.startsWith('/templates');
+
+  if (isProtected && !session) {
     return NextResponse.redirect(new URL('/login', request.url));
   }
 
@@ -19,5 +26,13 @@ export async function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ['/dashboard/:path*', '/login', '/register'],
+  matcher: [
+    '/dashboard/:path*',
+    '/leads/:path*',
+    '/pipeline/:path*',
+    '/reminders/:path*',
+    '/templates/:path*',
+    '/login',
+    '/register',
+  ],
 };

@@ -14,7 +14,8 @@ interface Lead {
   createdAt: string;
 }
 
-const STATUS_OPTIONS = ['NEW', 'CONTACTED', 'QUALIFIED', 'PROPOSAL', 'WON', 'LOST'];
+const STATUS_OPTIONS = ['New', 'Contacted', 'Qualified', 'Closed'];
+
 
 export default function LeadsPage() {
   const [leads, setLeads] = useState<Lead[]>([]);
@@ -29,7 +30,7 @@ export default function LeadsPage() {
   const [email, setEmail] = useState('');
   const [phone, setPhone] = useState('');
   const [company, setCompany] = useState('');
-  const [status, setStatus] = useState('NEW');
+  const [status, setStatus] = useState('New');
   const [notes, setNotes] = useState('');
   const [formError, setFormError] = useState('');
   const [formSuccess, setFormSuccess] = useState('');
