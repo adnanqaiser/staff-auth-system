@@ -3,12 +3,14 @@
 A secure staff registration and login system built with **Next.js (App Router)**, **Prisma**, **PostgreSQL**, **bcrypt**, and **HTTP-only session cookies**.
 
 ## Features
+
 - **Staff Registration (`/register`)**: Validates input, checks for duplicate emails, hashes passwords with `bcrypt`, and stores staff accounts in PostgreSQL.
 - **Staff Login (`/login`)**: Verifies credentials against hashed passwords and issues an HTTP-only JWT session cookie (`staff_session`).
 - **Protected Dashboard (`/dashboard`)**: Middleware and server-side session verification prevent unauthenticated access and redirect to `/login`.
 - **Logout (`/api/logout`)**: Clears the HTTP-only session cookie securely.
 
 ## Setup Instructions
+
 1. Install dependencies:
    ```bash
    npm install
@@ -26,4 +28,4 @@ A secure staff registration and login system built with **Next.js (App Router)**
    ```bash
    npm run dev
    ```
-"# staff-auth-system" 
+   "# staff-auth-system"
