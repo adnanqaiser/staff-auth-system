@@ -1,15 +1,16 @@
-import { cookies } from "next/headers";
-import { redirect } from "next/navigation";
-import { verifySession } from "@/lib/jwt";
-import LogoutButton from "./LogoutButton";
+import { cookies } from 'next/headers';
+import { redirect } from 'next/navigation';
+import Link from 'next/link';
+import { verifySession } from '@/lib/jwt';
+import LogoutButton from './LogoutButton';
 
 export default async function DashboardPage() {
   const cookieStore = await cookies();
-  const token = cookieStore.get("staff_session")?.value;
+  const token = cookieStore.get('staff_session')?.value;
   const session = await verifySession(token);
 
   if (!session) {
-    redirect("/login");
+    redirect('/login');
   }
 
   return (
@@ -17,14 +18,20 @@ export default async function DashboardPage() {
       <div className="max-w-3xl mx-auto bg-white rounded-xl shadow-md p-8">
         <div className="flex items-center justify-between border-b pb-4 mb-6">
           <div>
-            <h1 className="text-2xl font-bold text-gray-900">
-              Staff Dashboard
-            </h1>
+            <h1 className="text-2xl font-bold text-gray-900">Staff Dashboard</h1>
             <p className="text-sm text-green-600 font-medium mt-1">
               Authenticated via HTTP-only Session Cookie
             </p>
           </div>
-          <LogoutButton />
+          <div className="flex items-center gap-3">
+            <Link
+              href="/leads"
+              className="bg-blue-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-blue-700 transition"
+            >
+              Manage Leads & Contacts
+            </Link>
+            <LogoutButton />
+          </div>
         </div>
 
         <div className="bg-gray-50 rounded-lg p-6 border border-gray-200 space-y-2">
@@ -32,8 +39,7 @@ export default async function DashboardPage() {
             <span className="font-semibold">Staff ID:</span> #{session.userId}
           </p>
           <p className="text-gray-700">
-            <span className="font-semibold">Name:</span>{" "}
-            {session.name || "Staff Member"}
+            <span className="font-semibold">Name:</span> {session.name || 'Staff Member'}
           </p>
           <p className="text-gray-700">
             <span className="font-semibold">Email:</span> {session.email}
