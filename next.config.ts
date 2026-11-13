@@ -1,3 +1,7 @@
-git add package.json
-git commit -m "Use prisma generate and next build for Vercel"
-git push origin main
+import type { NextConfig } from "next";
+
+const nextConfig: NextConfig = {
+  cacheComponents: false,
+};
+
+export default nextConfig;
