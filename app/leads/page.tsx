@@ -43,7 +43,7 @@ export default function LeadsPage() {
         limit: '5',
         ...(search ? { search } : {}),
       });
-      const res = await fetch(`/api/leads?${params.toString()}`);
+      const res = await fetch('/api/leads?' + params.toString());
       const data = await res.json();
       if (res.ok) {
         setLeads(data.leads);
@@ -55,13 +55,12 @@ export default function LeadsPage() {
     }
   }, [page, search]);
 
-    useEffect(() => {
+  useEffect(() => {
     const timer = setTimeout(() => {
       void fetchLeads();
     }, 0);
     return () => clearTimeout(timer);
   }, [fetchLeads]);
-
 
   function resetForm() {
     setEditingId(null);
@@ -93,7 +92,7 @@ export default function LeadsPage() {
     setSubmitting(true);
 
     try {
-      const url = editingId ? `/api/leads/${editingId}` : '/api/leads';
+      const url = editingId ? '/api/leads/' + editingId : '/api/leads';
       const method = editingId ? 'PUT' : 'POST';
 
       const res = await fetch(url, {
@@ -108,7 +107,7 @@ export default function LeadsPage() {
       } else {
         setFormSuccess(editingId ? 'Lead updated successfully!' : 'Lead added successfully!');
         resetForm();
-        fetchLeads();
+        void fetchLeads();
       }
     } catch {
       setFormError('Network error while saving lead.');
@@ -119,13 +118,13 @@ export default function LeadsPage() {
 
   async function handleDelete(id: number) {
     if (!confirm('Are you sure you want to delete this lead?')) return;
-    const res = await fetch(`/api/leads/${id}`, { method: 'DELETE' });
+    const res = await fetch('/api/leads/' + id, { method: 'DELETE' });
     if (res.ok) {
       setFormSuccess('Lead deleted successfully.');
       if (leads.length === 1 && page > 1) {
         setPage(page - 1);
       } else {
-        fetchLeads();
+        void fetchLeads();
       }
     }
   }
@@ -151,7 +150,7 @@ export default function LeadsPage() {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           <div className="bg-white rounded-xl shadow-sm p-6">
             <h2 className="text-lg font-bold text-gray-900 mb-4">
-              {editingId ? `Edit Lead #${editingId}` : 'Add New Lead'}
+              {editingId ? 'Edit Lead #' + editingId : 'Add New Lead'}
             </h2>
 
             {formError && (
@@ -177,7 +176,6 @@ export default function LeadsPage() {
                   className="w-full px-3 py-2 border border-gray-300 rounded-lg text-gray-900 text-sm"
                 />
               </div>
-
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">Email Address *</label>
                 <input
@@ -189,7 +187,6 @@ export default function LeadsPage() {
                   className="w-full px-3 py-2 border border-gray-300 rounded-lg text-gray-900 text-sm"
                 />
               </div>
-
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">Phone</label>
                 <input
@@ -200,7 +197,6 @@ export default function LeadsPage() {
                   className="w-full px-3 py-2 border border-gray-300 rounded-lg text-gray-900 text-sm"
                 />
               </div>
-
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">Clinic / Company</label>
                 <input
@@ -211,7 +207,6 @@ export default function LeadsPage() {
                   className="w-full px-3 py-2 border border-gray-300 rounded-lg text-gray-900 text-sm"
                 />
               </div>
-
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">Status</label>
                 <select
@@ -226,7 +221,6 @@ export default function LeadsPage() {
                   ))}
                 </select>
               </div>
-
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">Notes</label>
                 <textarea
@@ -237,7 +231,6 @@ export default function LeadsPage() {
                   className="w-full px-3 py-2 border border-gray-300 rounded-lg text-gray-900 text-sm"
                 />
               </div>
-
               <div className="flex gap-2 pt-2">
                 <button
                   type="submit"
@@ -282,46 +275,45 @@ export default function LeadsPage() {
                   No leads found. Add your first lead using the form.
                 </p>
               ) : (
-                                <div className="space-y-3">
-                  {leads.map((lead) => (
-                    <div
-                      key={lead.id}
-                      className="p-4 border border-gray-200 rounded-lg hover:bg-gray-50 flex flex-wrap items-center justify-between gap-4"
-                    >
-                      <div className="space-y-1">
-                        <div className="flex items-center gap-2">
-                          <span className="font-semibold text-gray-900">{lead.name}</span>
+                <div role="table" className="w-full text-left text-sm border border-gray-200 rounded-lg overflow-hidden">
+                  <div role="row" className="grid grid-cols-12 bg-gray-50 border-b text-gray-600 font-semibold py-2.5 px-3">
+                    <div className="col-span-3">Name</div>
+                    <div className="col-span-3">Email / Phone</div>
+                    <div className="col-span-2">Company</div>
+                    <div className="col-span-2">Status</div>
+                    <div className="col-span-2 text-right">Actions</div>
+                  </div>
+                  <div className="divide-y">
+                    {leads.map((lead) => (
+                      <div key={lead.id} role="row" className="grid grid-cols-12 items-center py-3 px-3 hover:bg-gray-50">
+                        <div className="col-span-3 font-medium text-gray-900 truncate pr-2">{lead.name}</div>
+                        <div className="col-span-3 text-gray-700 truncate pr-2">
+                          <div>{lead.email}</div>
+                          {lead.phone && <div className="text-xs text-gray-500">{lead.phone}</div>}
+                        </div>
+                        <div className="col-span-2 text-gray-700 truncate pr-2">{lead.company || '-'}</div>
+                        <div className="col-span-2">
                           <span className="px-2 py-0.5 rounded-full text-xs font-semibold bg-blue-100 text-blue-800">
                             {lead.status}
                           </span>
                         </div>
-                        <div className="text-sm text-gray-600">
-                          {lead.email} {lead.phone ? `• ${lead.phone}` : ''}
+                        <div className="col-span-2 text-right space-x-2">
+                          <button
+                            onClick={() => startEdit(lead)}
+                            className="text-blue-600 hover:underline font-medium"
+                          >
+                            Edit
+                          </button>
+                          <button
+                            onClick={() => handleDelete(lead.id)}
+                            className="text-red-600 hover:underline font-medium"
+                          >
+                            Delete
+                          </button>
                         </div>
-                        {lead.company && (
-                          <div className="text-xs text-gray-500">Clinic/Company: {lead.company}</div>
-                        )}
-                        {lead.notes && (
-                          <div className="text-xs text-gray-500 italic">{lead.notes}</div>
-                        )}
                       </div>
-
-                      <div className="flex items-center gap-3 text-sm">
-                        <button
-                          onClick={() => startEdit(lead)}
-                          className="px-3 py-1.5 bg-blue-50 text-blue-700 rounded-lg hover:bg-blue-100 font-medium"
-                        >
-                          Edit
-                        </button>
-                        <button
-                          onClick={() => handleDelete(lead.id)}
-                          className="px-3 py-1.5 bg-red-50 text-red-700 rounded-lg hover:bg-red-100 font-medium"
-                        >
-                          Delete
-                        </button>
-                      </div>
-                    </div>
-                  ))}
+                    ))}
+                  </div>
                 </div>
               )}
             </div>
@@ -353,4 +345,3 @@ export default function LeadsPage() {
     </div>
   );
 }
-
